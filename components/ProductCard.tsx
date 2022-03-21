@@ -6,9 +6,9 @@ import { useRouter } from 'next/router';
 import { ColorSelector, LikeButton } from '../components';
 import { Variant, ProductProps } from '../types/product';
 
-const ProductCardContainer = styled.div`
-  width: 350px;
-  height: 350px;
+const ProductCardContainer = styled.div<{ page: string }>`
+  width: ${({ page }) => (page === 'productsByCategory' ? '315px' : '350px')};
+  height: ${({ page }) => (page === 'productsByCategory' ? '315px' : '350px')};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,11 +46,13 @@ const ProductImageContainer = styled.div`
   position: relative;
 `;
 
-const ProductFooter = styled.div`
+const ProductFooter = styled.div<{ page: string }>`
   width: 100%;
+  height: 42px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ page }) =>
+    page === 'productsByCategory' ? 'flex-end' : 'space-between'};
 `;
 
 const ProductPrice = styled.h3`
@@ -73,7 +75,7 @@ const ProductPriceContainer = styled.div`
   justify-content: flex-start;
 `;
 
-const ProductCard: React.FC<ProductProps> = ({ product }) => {
+const ProductCard: React.FC<ProductProps> = ({ product, page }) => {
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
     product.variants[0]
   );
@@ -98,6 +100,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
 
   return (
     <ProductCardContainer
+      page={page}
       onClick={linkToDetailPage}
       id={`product-card-${product.id}`}
     >
@@ -119,7 +122,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
         selectedVariant={selectedVariant}
         setSelectedVariant={setSelectedVariant}
       />
-      <ProductFooter>
+      <ProductFooter page={page}>
         <ProductPriceContainer>
           <ProductPrice>
             ${(selectedVariant.price - selectedVariant.discount).toFixed(2)}
@@ -128,7 +131,9 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
             <ProductFirstPrice>${selectedVariant.price}</ProductFirstPrice>
           )}
         </ProductPriceContainer>
-        <LikeButton size={'sm'} liked={liked} setLiked={setLiked} />
+        {page === 'homepage' && (
+          <LikeButton size={'sm'} liked={liked} setLiked={setLiked} />
+        )}
       </ProductFooter>
     </ProductCardContainer>
   );

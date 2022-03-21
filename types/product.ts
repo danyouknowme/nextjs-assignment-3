@@ -23,6 +23,7 @@ export interface GetProductItems {
 
 export interface ProductProps {
   product: Product;
+  page: string;
 }
 
 export interface LikeButtonProps {
